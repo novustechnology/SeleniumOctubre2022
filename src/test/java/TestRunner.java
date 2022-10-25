@@ -7,13 +7,9 @@ import org.junit.runner.RunWith;
         features = "src/test/resources/features",
         tags = "@Carrito",
         glue = "step",
-        //plugin = {""},
+        plugin = {"json:target/cucumber-report/cucumber.json","html:target/cucumber-report/cucumber-report.html"},
         monochrome = true
-
-
 )
-
-
 
 public class TestRunner {
 }
