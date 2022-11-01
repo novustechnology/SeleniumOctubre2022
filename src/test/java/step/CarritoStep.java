@@ -4,10 +4,8 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import page.DatosPagoPage;
-import page.DatosTarjetaPage;
-import page.HomePage;
-import page.MenuPage;
+import org.junit.Assert;
+import page.*;
 
 public class CarritoStep {
 
@@ -19,13 +17,15 @@ public class CarritoStep {
 
     DatosPagoPage datosPagoPage;
 
+    ValidarPagoPage validarPagoPage;
+
     public CarritoStep() {
         menuPage = new MenuPage(Hooks.driver);
         datosTarjetaPage = new DatosTarjetaPage(Hooks.driver);
         homePage = new HomePage(Hooks.driver);
         datosPagoPage= new DatosPagoPage(Hooks.driver);
+        validarPagoPage= new ValidarPagoPage(Hooks.driver);
     }
-
 
     @Given("la pagina de comprar esta disponible")
     public void laPaginaDeComprarEstaDisponible() {
@@ -55,5 +55,16 @@ public class CarritoStep {
     @Then("ingreso los datos de la tarjeta")
     public void ingresoLosDatosDeLaTarjeta() {
         datosPagoPage.ingresarDatos();
+    }
+
+    @And("agrego una cantidad {string} de productos al carrito")
+    public void agregoUnaCantidadDeProductosAlCarrito(String cantProducto) {
+        homePage.seleccionarCantFinal(Integer.parseInt(cantProducto));
+        homePage.clickComprar();
+    }
+
+    @Then("validamos que el pago fue exitoso {string}")
+    public void validamosQueElPagoFueExitoso(String txtPagoExitoso) {
+        Assert.assertEquals("El texto es diferente",txtPagoExitoso,validarPagoPage.validarMensajePago());
     }
 }

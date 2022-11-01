@@ -26,7 +26,14 @@ public class HomePage extends BasePage {
         new Select(cbCantidad).selectByValue("5");
     }
 
+    public void seleccionarCantFinal(int cant){
+        wait.until(ExpectedConditions.visibilityOf(cbCantidad));
+        new Select(cbCantidad).selectByValue(String.valueOf(cant));
+    }
+
+
     public void clickComprar(){
         btnComprar.click();
     }
+
 }
