@@ -34,7 +34,7 @@ public class Hooks {
 
             case "firefox":
                 WebDriverManager.firefoxdriver().setup();
-                driver= new FirefoxDriver();
+                driver = new FirefoxDriver();
                 break;
         }
         driver.manage().window().maximize();
@@ -43,8 +43,12 @@ public class Hooks {
 
     @AfterStep
     public void screenshot(Scenario scenario) {
-        final byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-        scenario.attach(screenshot, "image/png", scenario.getName());
+        if (scenario.isFailed()) {
+            final byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+            scenario.attach(screenshot, "image/png", scenario.getName());
+        }
+//        final byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+//        scenario.attach(screenshot, "image/png", scenario.getName());
     }
 
 

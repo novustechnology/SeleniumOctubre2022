@@ -1,13 +1,15 @@
 package page;
 
 import base.BasePage;
+import base.ConfigFileReader;
 import io.cucumber.datatable.DataTable;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import util.Util;
 
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,16 @@ public class FormularioPage extends BasePage {
     @FindBy(name = "photo")
     private WebElement btnImagen;
 
+    @FindBy(name = "continents")
+    private WebElement cboContinente;
+
+    @FindBy(xpath = "//button[text()='Button']")
+    private WebElement btnEnviar;
+
+
+    public void ingresarUrl() {
+        driver.get(ConfigFileReader.getProp("url"));
+    }
 
     public void ingresarDatosFormulario(DataTable dataTable) {
         wait.until(ExpectedConditions.elementToBeClickable(btnBanner));
@@ -44,12 +56,56 @@ public class FormularioPage extends BasePage {
         }
     }
 
+
+    public void ingresarDatosCsv() {
+        try {
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
     public void cargarImagen() throws InterruptedException {
         btnImagen.sendKeys("C:\\Users\\York\\Desktop\\SeleniumOctubre\\Selenium\\src\\test\\resources\\data\\cucumber.png");
         Thread.sleep(5000);
     }
 
-    public void seleccionarTipoSelenium(String tipoSelenium){
+    public void seleccionarTipoSelenium(String tipoSelenium) {
+        System.out.println("---NO SELECCIONADOS-----");
+        System.out.println("isEnable " + driver.findElement(By.xpath("//input[@value='RC']")).isEnabled());
+        System.out.println("isSelected " + driver.findElement(By.xpath("//input[@value='RC']")).isSelected());
+        System.out.println("isDisplayed " + driver.findElement(By.xpath("//input[@value='RC']")).isDisplayed());
 
+
+        System.out.println("---SELECCIONADOS-----");
+        driver.findElement(By.xpath("//input[@value='" + tipoSelenium + "']")).click();
+        WebElement seleniumTipo = driver.findElement(By.xpath("//input[@value='" + tipoSelenium + "']"));
+        System.out.println("isEnable " + seleniumTipo.isEnabled());
+        System.out.println("isSelected " + seleniumTipo.isSelected());
+        System.out.println("isDisplayed " + seleniumTipo.isDisplayed());
+    }
+
+    public void seleccionarContinente(String continente) {
+        new Select(cboContinente).selectByVisibleText(continente);
+    }
+
+    public void seleccionarComandoSelenium() {
+        Actions actions = new Actions(driver);
+        actions.keyDown(Keys.LEFT_CONTROL)
+                .click(driver.findElement(By.xpath("//option[text()='Browser Commands']")))
+                .click(driver.findElement(By.xpath("//option[text()='Navigation Commands']")))
+                .keyUp(Keys.LEFT_CONTROL)
+                .build()
+                .perform();
+        Util.scrollToElement(btnEnviar);
+    }
+
+    public void clickBotonEnviar() {
+        btnEnviar.click();
+        wait.until(ExpectedConditions.alertIsPresent()).dismiss();
+//        Alert alerta = driver.switchTo().alert();
+//        alerta.dismiss();
     }
 }
