@@ -43,12 +43,12 @@ public class Hooks {
 
     @AfterStep
     public void screenshot(Scenario scenario) {
-        if (scenario.isFailed()) {
-            final byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-            scenario.attach(screenshot, "image/png", scenario.getName());
-        }
-//        final byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-//        scenario.attach(screenshot, "image/png", scenario.getName());
+//        if (scenario.isFailed()) {
+//            final byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+//            scenario.attach(screenshot, "image/png", scenario.getName());
+//        }
+        final byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+        scenario.attach(screenshot, "image/png", scenario.getName());
     }
 
 
@@ -57,5 +57,4 @@ public class Hooks {
         driver.manage().deleteAllCookies();
         driver.quit();
     }
-
 }

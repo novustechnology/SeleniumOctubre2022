@@ -3,6 +3,9 @@ package page;
 import base.BasePage;
 import base.ConfigFileReader;
 import io.cucumber.datatable.DataTable;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
@@ -11,6 +14,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import util.Util;
 
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +25,8 @@ public class FormularioPage extends BasePage {
         super(driver);
         PageFactory.initElements(driver, this);
     }
+
+    String CSV_FILE_PATH = "src/test/resources/data/test.csv";
 
     @FindBy(id = "banner-accept")
     private WebElement btnBanner;
@@ -38,7 +46,6 @@ public class FormularioPage extends BasePage {
     @FindBy(xpath = "//button[text()='Button']")
     private WebElement btnEnviar;
 
-
     public void ingresarUrl() {
         driver.get(ConfigFileReader.getProp("url"));
     }
@@ -56,12 +63,21 @@ public class FormularioPage extends BasePage {
         }
     }
 
-
     public void ingresarDatosCsv() {
         try {
+            wait.until(ExpectedConditions.elementToBeClickable(btnBanner)).click();
+            Reader reader = Files.newBufferedReader(Paths.get(CSV_FILE_PATH));
+            CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader());
 
+            for (CSVRecord csvRecord : csvParser) {
+                txtFirstName.sendKeys(csvRecord.get("firstName"));
+                txtLastname.sendKeys(csvRecord.get("lastName"));
+                driver.findElement(By.xpath("//input[@value='" + csvRecord.get("sex") + "']")).click();
+                driver.findElement(By.xpath("//span[text()='" + csvRecord.get("yearsExperience") + "']")).click();
+                driver.findElement(By.xpath("//input[@value='" + csvRecord.get("profession") + "']")).click();
+            }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
     }
